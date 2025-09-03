@@ -23,6 +23,9 @@ def build_model(args):
     elif args.model_name == "mPLUG-Owl":
         from .mPLUG_Owl import mPLUG_Owl
         model = mPLUG_Owl(args)
+    elif args.model_name == "InternVL3-1B":
+        from .InternVL3 import InternVL3
+        model = InternVL3(args)
     else:
         model = None
         
