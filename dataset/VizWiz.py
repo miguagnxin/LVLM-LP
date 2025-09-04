@@ -6,8 +6,8 @@ from dataset.base import BaseDataset
 class VizWizDataset(BaseDataset):
     def __init__(self, prompter, split="val", data_root="/data/VizWiz/"):
         super(VizWizDataset, self).__init__()
-        self.ann = json.load(open(os.path.join(data_root, f"{split}.json"), 'r'))
-        self.img_root = os.path.join(data_root, f"{split}/") 
+        self.ann = json.load(open(os.path.join(data_root, f"Annotations/Annotations/{split}.json"), 'r'))
+        self.img_root = os.path.join(data_root, f"{split}/{split}/") 
         self.prompter = prompter
         self.split = split
          
