@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoProcessor
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoProcessor
 from model.base import LargeMultimodalModel
 
 
@@ -12,7 +12,7 @@ class Qwen2_5_VL(LargeMultimodalModel):
         # 加载 tokenizer / processor / model
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         self.processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
-        self.model = Qwen2VLForConditionalGeneration.from_pretrained(
+        self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch.bfloat16,
             device_map="auto",
