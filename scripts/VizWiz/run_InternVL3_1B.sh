@@ -9,7 +9,7 @@ CHUNKS=${#GPULIST[@]}
 for IDX in $(seq 0 $((CHUNKS-1))); do
     CUDA_VISIBLE_DEVICES=${GPULIST[$IDX]} python -m run_model \
         --model_name InternVL3-1B \
-        --model_path OpenGVLab/InternVL3-1B \
+        --model_path OpenGVLab/InternVL3-1B-hf \
         --split val \
         --dataset VizWiz \
         --prompt oe \
