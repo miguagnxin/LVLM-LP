@@ -26,6 +26,9 @@ def build_model(args):
     elif args.model_name == "InternVL3-1B":
         from .InternVL3 import InternVL3
         model = InternVL3(args)
+    elif args.model_name == "Qwen2.5-VL-3B":
+        from .Qwen2_5_VL import Qwen2_5_VL
+        model = Qwen2_5_VL(args)
     else:
         model = None
         
