@@ -31,20 +31,9 @@ class InternVL3(LargeMultimodalModel):
         prompt: str
         """
 
-        # 1. 构造 InternVL3 支持的 messages 格式
-        messages = [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "image"},
-                    {"type": "text", "text": prompt}
-                ]
-            }
-        ]
-
         # 2. 用 processor 处理多模态输入（必须同时传 messages 和 images）
         inputs = self.processor(
-            messages,
+            prompt,
             images=image,
             return_tensors="pt"
         ).to(self.model.device)
