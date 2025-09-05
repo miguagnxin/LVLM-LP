@@ -1,5 +1,3 @@
-# 文件: model/internvl3.py
-
 import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoProcessor, AutoModel
@@ -11,7 +9,7 @@ class InternVL3(LargeMultimodalModel):
         super().__init__()
         model_name = args.model_path or "OpenGVLab/InternVL3-1B-hf"
 
-        # 加载 tokenizer + processor + model
+        # 加载 tokenizer / processor / model
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         self.processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
         self.model = AutoModel.from_pretrained(
@@ -21,7 +19,7 @@ class InternVL3(LargeMultimodalModel):
             trust_remote_code=True
         ).eval().cuda()
 
-        # 推理超参数
+        # 推理参数
         self.temperature = args.temperature
         self.top_p = args.top_p
         self.num_beams = args.num_beams
@@ -33,19 +31,25 @@ class InternVL3(LargeMultimodalModel):
         prompt: str
         """
 
-        # 1. 构造 multimodal 输入
+        # 1. 构造 InternVL3 支持的 messages 格式
         messages = [
-            {"type": "image", "image": image},   # 直接传 numpy / PIL 都支持
-            {"type": "text", "text": prompt}
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image"},
+                    {"type": "text", "text": prompt}
+                ]
+            }
         ]
 
-        # 2. processor 处理输入
+        # 2. 用 processor 处理多模态输入（必须同时传 messages 和 images）
         inputs = self.processor(
-            text=messages,
+            messages,
+            images=image,
             return_tensors="pt"
         ).to(self.model.device)
 
-        # 3. 调用 generate，返回 scores 以获取 logits/probs
+        # 3. generate 推理
         with torch.inference_mode():
             outputs = self.model.generate(
                 **inputs,
@@ -58,7 +62,7 @@ class InternVL3(LargeMultimodalModel):
                 return_dict_in_generate=True
             )
 
-        # 4. 提取 response（去掉输入 token）
+        # 4. 提取 response（去掉输入 tokens）
         input_len = inputs["input_ids"].shape[1]
         output_ids = outputs.sequences[0][input_len:]
         response = self.tokenizer.decode(output_ids, skip_special_tokens=True)
