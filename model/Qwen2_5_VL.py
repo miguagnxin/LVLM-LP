@@ -12,7 +12,7 @@ class Qwen2_5_VL(LargeMultimodalModel):
         # 加载 tokenizer / processor / model
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         self.processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
-        self.model = Qwen2VLForConditionalGeneration.from_pretrained(
+        self.model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
             model_name,
             torch_dtype="auto",
             device_map="auto",

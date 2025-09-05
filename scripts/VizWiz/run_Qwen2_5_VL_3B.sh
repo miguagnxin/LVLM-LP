@@ -5,6 +5,10 @@ IFS=',' read -ra GPULIST <<< "$gpu_list"
 
 CHUNKS=${#GPULIST[@]}
 
+# 创建必要的输出目录
+mkdir -p ./output/Qwen2.5-VL-3B/tmp
+mkdir -p ./output/tmp
+
 # VizWiz val
 for IDX in $(seq 0 $((CHUNKS-1))); do
     CUDA_VISIBLE_DEVICES=${GPULIST[$IDX]} python -m run_model \
