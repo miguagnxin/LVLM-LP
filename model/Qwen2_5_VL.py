@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoProcessor
+from transformers import Qwen2_5_VLForConditionalGeneration, AutoTokenizer, AutoProcessor
 from model.base import LargeMultimodalModel
 
 
