@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from transformers import Qwen2_5_VLForConditionalGeneration, AutoTokenizer, AutoProcessor
+from transformers import Qwen2_5_VLForConditionalGeneration, AutoTokenizer, AutoProcessor, BitsAndBytesConfig
 from model.base import LargeMultimodalModel
 
 
@@ -9,15 +9,23 @@ class Qwen2_5_VL(LargeMultimodalModel):
         super().__init__()
         model_name = args.model_path or "Qwen/Qwen2.5-VL-3B-Instruct"
 
+        # 配置4位量化
+        quantization_config = BitsAndBytesConfig(
+            load_in_4bit=True,  # 使用4位量化
+            bnb_4bit_compute_dtype=torch.float16,  # 计算时使用fp16保持精度
+            bnb_4bit_quant_type="nf4",  # 使用Normal Float 4量化
+            bnb_4bit_use_double_quant=True,  # 使用双重量化进一步压缩
+        )
+
         # 加载 tokenizer / processor / model
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         self.processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
         self.model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
             model_name,
-            torch_dtype="auto",
+            quantization_config=quantization_config,
             device_map="auto",
             trust_remote_code=True
-        ).eval().cuda()
+        ).eval()
 
         # 推理参数
         self.temperature = args.temperature
