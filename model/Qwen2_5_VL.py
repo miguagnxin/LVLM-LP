@@ -25,7 +25,7 @@ class Qwen2_5_VL(LargeMultimodalModel):
             quantization_config=quantization_config,
             device_map="auto",
             trust_remote_code=True,
-            attn_implementation="flash_attention_2"
+            # attn_implementation="flash_attention_2"
         ).eval()
 
         # 推理参数
